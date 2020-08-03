@@ -35,7 +35,9 @@ class MainWindow(QMainWindow):
         root_dir = os.path.abspath('.')  # 获取当前文件所在目录的上一级目录，即项目所在目录D:\PycharmProjects\configparser\qtConfigparser
         conf = configparser.ConfigParser()
         print(conf)
-        conf.read(root_dir + "/config.ini")  # 拼接得到config.ini文件的路径，直接使用
+        print(root_dir)
+        conf.read(root_dir + "\config.ini",encoding="utf8")  # 拼接得到config.ini文件的路径，直接使用
+        print("读取正常")
         return  conf
 
     def getAddress(self):
