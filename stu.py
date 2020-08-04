@@ -24,14 +24,12 @@ class MainWindow(QMainWindow):
         self.initUI()
         self.manager = Manager(QWidget)
         self.profile.setRequestInterceptor(self.manager)
-        # self.showMaximized()
         conf = self.getDir()
         startupFullScreen = conf.getboolean("client", "startup.full-screen")
         print(startupFullScreen)
         if startupFullScreen:
             self.showFullScreen()    #   如果要QT全屏
         else:
-            # self.showMaximized()
             self.showNormal()
     # @pyqtSlot()     #   鼠标点击事件
     # def on_click(self):
@@ -43,7 +41,7 @@ class MainWindow(QMainWindow):
         print(conf)
         print(root_dir)
         conf.read(root_dir + "\config.ini",encoding="utf8")  # 拼接得到config.ini文件的路径，直接使用
-        print("读取正常")
+        # print("读取正常")
         return  conf
 
     def getAddress(self):
@@ -58,26 +56,26 @@ class MainWindow(QMainWindow):
 
         # 检测键盘回车按键，函数名字不要改，这是重写键盘事件
     def keyPressEvent(self, event):
-        #print("按下：" + str(event.key()))    # 这里event.key（）显示的是按键的编码
+        # print("按下：" + str(event.key()))    # 这里event.key（）显示的是按键的编码
 
         # 举例，这里Qt.Key_A注意虽然字母大写，但按键事件对大小写不敏感
         if (event.key() == Qt.Key_Escape):
-            print('测试：ESC')
+            # print('测试：ESC')
             self.showNormal()
         if (event.key() == Qt.Key_F11):
-            print('测试：F11')
+            # print('测试：F11')
             self.showFullScreen()
         if (event.key() == Qt.Key_F12):
-            print('测试：F12')
+            # print('测试：F12')
             self.showMaximized()
         #
         if (event.key() == Qt.Key_Equal):
             if QApplication.keyboardModifiers() == Qt.ControlModifier:
-                print("CTRL =")
+                # print("CTRL =")
                 self.browser.setZoomFactor(self.browser.zoomFactor() + 0.1)
         if (event.key() == Qt.Key_Minus):
             if QApplication.keyboardModifiers() == Qt.ControlModifier:
-                print("CTRL -")
+                # print("CTRL -")
                 self.browser.setZoomFactor(self.browser.zoomFactor()-0.1)
 
     def initUI(self):
@@ -91,8 +89,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(name)  # 设置窗口标题
         self.setWindowIcon(QIcon(logo))  # 设置任务栏图标
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("stu")  # 强制使用单独的AppUserModelID ，现在这个窗口拥有了一个新资源支配权限
-        # self.setMinimumWidth(1200)  # 窗体最小宽度
-        # self.setMinimumHeight(720)  # 窗体最小高度
         self.resize(width, height)
         self.page = QWebEnginePage()
         self.profile = self.page.profile()
@@ -103,10 +99,6 @@ class MainWindow(QMainWindow):
         address=self.getAddress()
         self.browser.setUrl(QUrl(address))  # 打开登陆页的URL
         self.setCentralWidget(self.browser)  # 将网页放入窗口中
-        # button = QPushButton('首页', self)     #返回首页的按钮
-        # button.setToolTip('This is an example button')
-        # button.move(0, 0)
-        # button.clicked.connect(self.on_click)
 
 class MyEngineView(QWebEngineView):     #浏览器类。
 
@@ -160,15 +152,6 @@ class Manager(QWebEngineUrlRequestInterceptor): #监听事件
 
     def interceptRequest(self, reply):
         url = reply.requestUrl().toString()
-
-        # if "http://111.111.111.111/control" in url:
-        #     cmd = r'.\VNC\vncviewer.exe'; #如果要直接运行类时可用远程桌面  cmd = r'dist\VNC\vncviewer.exe';
-        #     try:
-        #         subprocess.Popen(cmd, close_fds=True)
-        #     except :
-        #         print('process ran too long')
-        #     finally:
-        #         print('process finally')
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)  # 创建应用
