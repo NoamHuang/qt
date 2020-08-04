@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
         if startupFullScreen:
             self.showFullScreen()    #   如果要QT全屏
         else:
-            self.showNormal()
+            self.showMaximized()
     # @pyqtSlot()     #   鼠标点击事件
     # def on_click(self):
     #     self.page.load(QUrl(excelUrl));
@@ -40,7 +40,7 @@ class MainWindow(QMainWindow):
         conf = configparser.ConfigParser()
         print(conf)
         print(root_dir)
-        conf.read(root_dir + "\config.ini",encoding="utf8")  # 拼接得到config.ini文件的路径，直接使用
+        conf.read(root_dir + "\config.ini",encoding="utf-8-sig")  # 拼接得到config.ini文件的路径，直接使用
         # print("读取正常")
         return  conf
 
@@ -82,14 +82,13 @@ class MainWindow(QMainWindow):
         conf = self.getDir()
         name = conf.get("client", "name")
         logo = conf.get("client", "logo")
-        width = conf.getint("client", "width")
-        height = conf.getint("client", "height")
-        # startupFullScreen = conf.getboolean("client", "startup.full-screen")
+        # width = conf.getint("client", "width")
+        # height = conf.getint("client", "height")
 
         self.setWindowTitle(name)  # 设置窗口标题
         self.setWindowIcon(QIcon(logo))  # 设置任务栏图标
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("stu")  # 强制使用单独的AppUserModelID ，现在这个窗口拥有了一个新资源支配权限
-        self.resize(width, height)
+        # self.resize(width, height)
         self.page = QWebEnginePage()
         self.profile = self.page.profile()
         self.browser = MyEngineView()
