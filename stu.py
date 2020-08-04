@@ -7,26 +7,32 @@ from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtWebEngineCore import *
 
-from PyQt5.QtCore import QDir, QFile, QFileInfo, QIODevice, QUrl
-from PyQt5.QtWidgets import (QApplication, QDialog, QDialogButtonBox,
-        QHBoxLayout, QLabel, QLineEdit, QMessageBox, QProgressDialog,
-        QPushButton, QVBoxLayout)
-from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest
+from PyQt5.QtCore import QFileInfo,QUrl
+from PyQt5.QtWidgets import (QApplication)
 
 import sys
 import ctypes
 import subprocess
-
 import configparser
 import os
 
+startupFullScreen = False;
 class MainWindow(QMainWindow):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.initUI()
         self.manager = Manager(QWidget)
         self.profile.setRequestInterceptor(self.manager)
-        self.showMaximized()  #   self.showFullScreen()    #   如果要QT全屏
+        # self.showMaximized()
+        conf = self.getDir()
+        startupFullScreen = conf.getboolean("client", "startup.full-screen")
+        print(startupFullScreen)
+        if startupFullScreen:
+            self.showFullScreen()    #   如果要QT全屏
+        else:
+            # self.showMaximized()
+            self.showNormal()
     # @pyqtSlot()     #   鼠标点击事件
     # def on_click(self):
     #     self.page.load(QUrl(excelUrl));
@@ -45,7 +51,8 @@ class MainWindow(QMainWindow):
         ip = conf.get("platform", "ip")  # 获取ip
         port = conf.get("platform", "port")  # 获取port
         protocol = conf.get("platform", "protocol")
-        address = protocol + '://' + ip + ':' + port
+        num = conf.get("platform", "num")
+        address = protocol + '://' + ip + ':' + port+'?num='+num
         print(address)
         return address
 
@@ -79,6 +86,8 @@ class MainWindow(QMainWindow):
         logo = conf.get("client", "logo")
         width = conf.getint("client", "width")
         height = conf.getint("client", "height")
+        # startupFullScreen = conf.getboolean("client", "startup.full-screen")
+
         self.setWindowTitle(name)  # 设置窗口标题
         self.setWindowIcon(QIcon(logo))  # 设置任务栏图标
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("stu")  # 强制使用单独的AppUserModelID ，现在这个窗口拥有了一个新资源支配权限
@@ -152,14 +161,14 @@ class Manager(QWebEngineUrlRequestInterceptor): #监听事件
     def interceptRequest(self, reply):
         url = reply.requestUrl().toString()
 
-        if "http://111.111.111.111/control" in url:
-            cmd = r'.\VNC\vncviewer.exe'; #如果要直接运行类时可用远程桌面  cmd = r'dist\VNC\vncviewer.exe';
-            try:
-                subprocess.Popen(cmd, close_fds=True)
-            except :
-                print('process ran too long')
-            finally:
-                print('process finally')
+        # if "http://111.111.111.111/control" in url:
+        #     cmd = r'.\VNC\vncviewer.exe'; #如果要直接运行类时可用远程桌面  cmd = r'dist\VNC\vncviewer.exe';
+        #     try:
+        #         subprocess.Popen(cmd, close_fds=True)
+        #     except :
+        #         print('process ran too long')
+        #     finally:
+        #         print('process finally')
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)  # 创建应用
